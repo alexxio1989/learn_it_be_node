@@ -6,7 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mysql_1 = __importDefault(require("mysql"));
 const cors_1 = __importDefault(require("cors"));
+const LezioneCtrl_1 = require("./controllers/LezioneCtrl");
 const app = express_1.default();
+let lezioneCtrl = new LezioneCtrl_1.LezioneCtrl();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(cors_1.default({
@@ -29,5 +31,8 @@ const server = app.listen(process.env.PORT || 8000, function () {
 });
 app.get('/', (req, res) => {
     res.send('Hello World');
+});
+app.post('/lezione/updateparagraph', (req, res) => {
+    lezioneCtrl.updateLastParagraph(req, res, connection);
 });
 //# sourceMappingURL=index.js.map

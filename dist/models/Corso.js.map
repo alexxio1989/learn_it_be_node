@@ -1,0 +1,1 @@
+{"version":3,"file":"Corso.js","sourceRoot":"","sources":["../../src/models/Corso.ts"],"names":[],"mappings":";;;AACA,uCAAoC;AAIpC,6CAA0C;AAG1C,MAAa,KAAK;IAAlB;QAII,YAAO,GAAc,EAAE,CAAC;QACxB,UAAK,GAAe,EAAE,CAAC;QACvB,cAAS,GAAW,EAAE,CAAC;QACvB,qBAAgB,GAAW,EAAE,CAAC;QAC9B,SAAI,GAAe,IAAI,uBAAU,EAAE,CAAC;QACpC,cAAS,GAAW,IAAI,iBAAO,EAAE,CAAC;IAMtC,CAAC;CAAA;AAfD,sBAeC"}
