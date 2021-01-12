@@ -1,4 +1,5 @@
 import { Connection } from "mysql";
+import { LezioneResponse } from "../response/LezioneResponse";
 import { LezioneRepo } from "../repositories/LezioneRepo";
 import { ICtrl } from "./core/ICtrl";
 
@@ -24,8 +25,18 @@ export class LezioneCtrl implements ICtrl {
     }
 
     updateLastParagraph(req: any, res: any, connection: Connection): void {
-        this.lezioneRepo.updateLastParagraph(req,connection).subscribe(next => {
-            res.status(next.httpStatus).send(next);
+        let lezioneResponse :LezioneResponse; 
+        let sent = false;
+        this.lezioneRepo.updateLastParagraph(req,connection);
+        this.lezioneRepo.getOBS().subscribe(next => {
+            lezioneResponse = next;
+            if(lezioneResponse !== undefined){
+                if(!sent){
+                    sent = true;
+                    this.lezioneRepo.resetOBS();
+                    return res.status(lezioneResponse.httpStatus).send(lezioneResponse);
+                }
+            }
         });
     }
 

@@ -22,8 +22,18 @@ class LezioneCtrl {
         throw new Error("Method not implemented.");
     }
     updateLastParagraph(req, res, connection) {
-        this.lezioneRepo.updateLastParagraph(req, connection).subscribe(next => {
-            res.status(next.httpStatus).send(next);
+        let lezioneResponse;
+        let sent = false;
+        this.lezioneRepo.updateLastParagraph(req, connection);
+        this.lezioneRepo.getOBS().subscribe(next => {
+            lezioneResponse = next;
+            if (lezioneResponse !== undefined) {
+                if (!sent) {
+                    sent = true;
+                    this.lezioneRepo.resetOBS();
+                    return res.status(lezioneResponse.httpStatus).send(lezioneResponse);
+                }
+            }
         });
     }
 }

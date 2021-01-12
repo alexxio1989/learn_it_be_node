@@ -8,6 +8,12 @@ class LezioneRepo {
         this.lezioneResponse = new LezioneResponse_1.LezioneResponse();
         this.iSubject = new rxjs_1.Subject();
     }
+    getOBS() {
+        return this.iSubject.asObservable();
+    }
+    resetOBS() {
+        this.iSubject = new rxjs_1.Subject();
+    }
     save(req, connection) {
         throw new Error("Method not implemented.");
     }
@@ -40,7 +46,6 @@ class LezioneRepo {
             this.lezioneResponse.status = "Salvataggio avvenuto con successo";
             this.iSubject.next(this.lezioneResponse);
         });
-        return this.iSubject;
     }
 }
 exports.LezioneRepo = LezioneRepo;

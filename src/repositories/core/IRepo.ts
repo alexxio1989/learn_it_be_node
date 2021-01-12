@@ -6,15 +6,17 @@ export declare interface IRepo<T>{
     
     iSubject: Subject<T>;
 
+    getOBS(): Observable<any>;
+
     
-    save(req: any, connection:mysql.Connection ): Observable<T>;
+    save(req: any, connection:mysql.Connection ): void;
     
-    update(req: any, connection:mysql.Connection ): Observable<T>;
+    update(req: any, connection:mysql.Connection ): void;
     
-    get(req: any, connection:mysql.Connection ): Observable<T>;
+    get(req: any, connection:mysql.Connection ): void;
   
-    delete(req: any, connection:mysql.Connection ): Observable<T>;
+    delete(req: any, connection:mysql.Connection ): void;
    
-    getAll(req: any, connection:mysql.Connection ): Observable<T>;
+    getAll(req: any, connection:mysql.Connection ): void;
 
 }

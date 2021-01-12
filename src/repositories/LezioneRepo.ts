@@ -8,24 +8,32 @@ import { IRepo } from "./core/IRepo";
 
 export class LezioneRepo implements IRepo<LezioneResponse>{
     lezioneResponse = new LezioneResponse();
+
     iSubject: Subject<any> = new Subject();
-    save(req: any, connection: Connection): Observable<any> {
+
+    getOBS(): Observable<any> {
+        return this.iSubject.asObservable();
+    }
+    resetOBS(){
+        this.iSubject = new Subject();
+    }
+    save(req: any, connection: Connection): void {
         throw new Error("Method not implemented.");
     }
-    update(req: any, connection: Connection): Observable<any> {
+    update(req: any, connection: Connection): void {
         throw new Error("Method not implemented.");
     }
-    get(req: any, connection: Connection): Observable<any> {
+    get(req: any, connection: Connection): void {
         throw new Error("Method not implemented.");
     }
-    delete(req: any, connection: Connection): Observable<any> {
+    delete(req: any, connection: Connection): void {
         throw new Error("Method not implemented.");
     }
-    getAll(req: any, connection: Connection): Observable<any> {
+    getAll(req: any, connection: Connection): void {
         throw new Error("Method not implemented.");
     }
 
-    updateLastParagraph(req: any, connection: Connection): Observable<any>{
+    updateLastParagraph(req: any, connection: Connection): void{
         let lezione: Lezione;
         let paragraph : Paragrafo;
         let sql = "UPDATE lezione SET last_parag_id = ? WHERE idlezione = ?";
@@ -42,8 +50,6 @@ export class LezioneRepo implements IRepo<LezioneResponse>{
             this.lezioneResponse.status = "Salvataggio avvenuto con successo";
             this.iSubject.next(this.lezioneResponse)
         })
-
-        return this.iSubject;
     }
 
 
