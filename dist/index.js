@@ -7,8 +7,10 @@ const express_1 = __importDefault(require("express"));
 const mysql_1 = __importDefault(require("mysql"));
 const cors_1 = __importDefault(require("cors"));
 const LezioneCtrl_1 = require("./controllers/LezioneCtrl");
+const CorsoCtrl_1 = require("./controllers/CorsoCtrl");
 const app = express_1.default();
 let lezioneCtrl = new LezioneCtrl_1.LezioneCtrl();
+let corsoCtrl = new CorsoCtrl_1.CorsoCtrl();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(cors_1.default({
@@ -34,5 +36,8 @@ app.get('/', (req, res) => {
 });
 app.post('/lezione/updateparagraph', (req, res) => {
     lezioneCtrl.updateLastParagraph(req, res, connection);
+});
+app.post('/corso/updateVisibilityCorso', (req, res) => {
+    corsoCtrl.updateVisibilityCorso(req, res, connection);
 });
 //# sourceMappingURL=index.js.map

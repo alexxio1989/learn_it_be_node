@@ -2,10 +2,12 @@ import Express from "express";
 import mysql from 'mysql';
 import cors from 'cors';
 import { LezioneCtrl } from "./controllers/LezioneCtrl";
+import { CorsoCtrl } from "./controllers/CorsoCtrl";
 
 const app = Express();
 
 let lezioneCtrl= new LezioneCtrl();
+let corsoCtrl = new CorsoCtrl();
 app.use(Express.json());
 app.use(Express.urlencoded( {extended : true} ))
 
@@ -40,4 +42,8 @@ app.get('/' , (req,res) => {
 
 app.post('/lezione/updateparagraph' , (req,res) => {
     lezioneCtrl.updateLastParagraph(req,res,connection);
+});
+
+app.post('/corso/updateVisibilityCorso' , (req,res) => {
+    corsoCtrl.updateVisibilityCorso(req,res,connection);
 });
