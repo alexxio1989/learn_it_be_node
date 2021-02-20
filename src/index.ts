@@ -3,13 +3,16 @@ import mysql from 'mysql';
 import cors from 'cors';
 import { LezioneCtrl } from "./controllers/LezioneCtrl";
 import { CorsoCtrl } from "./controllers/CorsoCtrl";
+import { FileCtrl } from "./controllers/FileCtrl";
 
 const app = Express();
 
 let lezioneCtrl= new LezioneCtrl();
 let corsoCtrl = new CorsoCtrl();
-app.use(Express.json());
-app.use(Express.urlencoded( {extended : true} ))
+let fileCtrl = new FileCtrl();
+app.use(Express.json({limit: '150mb'}));
+app.use(Express.urlencoded( {limit: '150mb',extended : true} ))
+
 
 
 app.use(cors({
@@ -46,4 +49,8 @@ app.post('/lezione/updateparagraph' , (req,res) => {
 
 app.post('/corso/updateVisibilityCorso' , (req,res) => {
     corsoCtrl.updateVisibilityCorso(req,res,connection);
+});
+
+app.post('/file/save' , (req,res) => {
+    fileCtrl.save(req,res,connection);
 });

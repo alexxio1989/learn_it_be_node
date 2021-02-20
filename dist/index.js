@@ -8,11 +8,13 @@ const mysql_1 = __importDefault(require("mysql"));
 const cors_1 = __importDefault(require("cors"));
 const LezioneCtrl_1 = require("./controllers/LezioneCtrl");
 const CorsoCtrl_1 = require("./controllers/CorsoCtrl");
+const FileCtrl_1 = require("./controllers/FileCtrl");
 const app = express_1.default();
 let lezioneCtrl = new LezioneCtrl_1.LezioneCtrl();
 let corsoCtrl = new CorsoCtrl_1.CorsoCtrl();
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: true }));
+let fileCtrl = new FileCtrl_1.FileCtrl();
+app.use(express_1.default.json({ limit: '150mb' }));
+app.use(express_1.default.urlencoded({ limit: '150mb', extended: true }));
 app.use(cors_1.default({
     origin: '*'
 }));
@@ -39,5 +41,8 @@ app.post('/lezione/updateparagraph', (req, res) => {
 });
 app.post('/corso/updateVisibilityCorso', (req, res) => {
     corsoCtrl.updateVisibilityCorso(req, res, connection);
+});
+app.post('/file/save', (req, res) => {
+    fileCtrl.save(req, res, connection);
 });
 //# sourceMappingURL=index.js.map
