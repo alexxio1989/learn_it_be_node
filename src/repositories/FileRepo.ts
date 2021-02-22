@@ -69,15 +69,75 @@ export class FileRepo implements IRepo<FileResponse>{
         throw new Error("Method not implemented.");
     }
     get(req: any, connection: Connection): void {
-        throw new Error("Method not implemented.");
+        let fileInput : FileLearnIt;
+        let fileOut = new FileLearnIt();
+        fileInput = req.body;
+        let sql = "SELECT * from file WHERE idpadre = ? AND type_padre = ?";
+
+        const params = [fileInput.idPadre, fileInput.typePadre];
+
+        const result = connection.query(sql, params, (err: any, result: any) => {
+           
+            if (err) {
+                this.fileResponse.httpStatus = 500;
+                this.fileResponse.status = "Recupero in errore";
+                throw err;
+            }
+
+           let files = [];
+           files = result;
+
+            let base64 = '';
+            if(files !== undefined && files !== null && files.length > 0){
+
+                const fileFromDB = files[0];
+                fileOut.id = fileFromDB.idtable1;
+                fileOut.idPadre = fileFromDB.idpadre;
+                fileOut.typePadre = fileFromDB.type_padre;
+                fileOut.typeFile = fileFromDB.type_file;
+                fileOut.formato = fileFromDB.format;
+                fileOut.titolo = fileFromDB.titolo;
+                let base64 = fileFromDB.format;
+                files.forEach((element: any) => {
+                    base64 = base64 + element.base_64;
+                });
+                fileOut.base64 = base64;
+                this.fileResponse.obj = fileOut;
+                this.fileResponse.httpStatus = 200;
+                this.iSubject.next(this.fileResponse);
+            }
+
+            
+        })
     }
+
+
     delete(req: any, connection: Connection): void {
         let file : FileLearnIt;
-        let sql ="DELETE FROM file WHERE idtable1 = ?";
+        file = req.body;
+        let sql ="DELETE FROM file WHERE idpadre = ? AND type_padre = ?";
+
+        const params = [file.idPadre, file.typePadre];
+
+        const result = connection.query(sql, params, (err: any, result: any) => {
+           
+            if (err) {
+                this.fileResponse.httpStatus = 500;
+                this.fileResponse.status = "Eliminazione in errore";
+                throw err;
+            }
+           
+            this.fileResponse.httpStatus = 200;
+            this.fileResponse.status = "Eliminazione avvenuta con successo"
+            this.iSubject.next(this.fileResponse);
+
+            
+        })
     }
+
+    
     getAll(req: any, connection: Connection): void {
-        let file : FileLearnIt;
-        let sql = "SELECT * from file WHERE idpadre = ? AND type_padre = ?";
+        throw new Error("Method not implemented.");
     }
 
 }

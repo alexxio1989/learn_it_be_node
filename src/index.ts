@@ -13,12 +13,7 @@ let fileCtrl = new FileCtrl();
 app.use(Express.json({limit: '150mb'}));
 app.use(Express.urlencoded( {limit: '150mb',extended : true} ))
 
-
-
-app.use(cors({
-    origin: '*'
-  }));
-
+app.use(cors({origin: '*'}));
 
 const connection = mysql.createConnection({
     host     : 'shopux.coouthbw1pyt.eu-central-1.rds.amazonaws.com',
@@ -34,9 +29,7 @@ connection.connect((err: any) =>{
     console.log("Mysql Connected ...")
 })
 
-const server = app.listen(process.env.PORT || 8000, function () {
-    console.log("Listening on port http://localhost:8000");
-});
+const server = app.listen(process.env.PORT || 8000, function () {});
 
 app.get('/' , (req,res) => {
     res.send('Hello World')
@@ -53,4 +46,12 @@ app.post('/corso/updateVisibilityCorso' , (req,res) => {
 
 app.post('/file/save' , (req,res) => {
     fileCtrl.save(req,res,connection);
+});
+
+app.post('/file/get' , (req,res) => {
+    fileCtrl.get(req,res,connection);
+});
+
+app.post('/file/delete' , (req,res) => {
+    fileCtrl.delete(req,res,connection);
 });

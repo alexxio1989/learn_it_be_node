@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileRepo = void 0;
 const rxjs_1 = require("rxjs");
 const FileUtils_1 = require("../utils/FileUtils");
+const FileLearnIt_1 = require("../models/FileLearnIt");
 const FileResponse_1 = require("../response/FileResponse");
 class FileRepo {
     constructor() {
@@ -57,15 +58,57 @@ class FileRepo {
         throw new Error("Method not implemented.");
     }
     get(req, connection) {
-        throw new Error("Method not implemented.");
+        let fileInput;
+        let fileOut = new FileLearnIt_1.FileLearnIt();
+        fileInput = req.body;
+        let sql = "SELECT * from file WHERE idpadre = ? AND type_padre = ?";
+        const params = [fileInput.idPadre, fileInput.typePadre];
+        const result = connection.query(sql, params, (err, result) => {
+            if (err) {
+                this.fileResponse.httpStatus = 500;
+                this.fileResponse.status = "Recupero in errore";
+                throw err;
+            }
+            let files = [];
+            files = result;
+            let base64 = '';
+            if (files !== undefined && files !== null && files.length > 0) {
+                const fileFromDB = files[0];
+                fileOut.id = fileFromDB.idtable1;
+                fileOut.idPadre = fileFromDB.idpadre;
+                fileOut.typePadre = fileFromDB.type_padre;
+                fileOut.typeFile = fileFromDB.type_file;
+                fileOut.formato = fileFromDB.format;
+                fileOut.titolo = fileFromDB.titolo;
+                let base64 = fileFromDB.format;
+                files.forEach((element) => {
+                    base64 = base64 + element.base_64;
+                });
+                fileOut.base64 = base64;
+                this.fileResponse.obj = fileOut;
+                this.fileResponse.httpStatus = 200;
+                this.iSubject.next(this.fileResponse);
+            }
+        });
     }
     delete(req, connection) {
         let file;
-        let sql = "DELETE FROM file WHERE idtable1 = ?";
+        file = req.body;
+        let sql = "DELETE FROM file WHERE idpadre = ? AND type_padre = ?";
+        const params = [file.idPadre, file.typePadre];
+        const result = connection.query(sql, params, (err, result) => {
+            if (err) {
+                this.fileResponse.httpStatus = 500;
+                this.fileResponse.status = "Eliminazione in errore";
+                throw err;
+            }
+            this.fileResponse.httpStatus = 200;
+            this.fileResponse.status = "Eliminazione avvenuta con successo";
+            this.iSubject.next(this.fileResponse);
+        });
     }
     getAll(req, connection) {
-        let file;
-        let sql = "SELECT * from file WHERE idpadre = ? AND type_padre = ?";
+        throw new Error("Method not implemented.");
     }
 }
 exports.FileRepo = FileRepo;

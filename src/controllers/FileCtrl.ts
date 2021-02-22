@@ -23,12 +23,30 @@ export class FileCtrl implements ICtrl {
             }
         });
     }
+
+
     update(req: any, res: any, connection: Connection): void {
         throw new Error("Method not implemented.");
     }
+
+
     get(req: any, res: any, connection: Connection): void {
-        throw new Error("Method not implemented.");
+        let fileResponse: FileResponse;
+        let sent = false;
+        this.fileRepo.get(req,connection);
+        this.fileRepo.getOBS().subscribe(next => {
+            fileResponse = next;
+            if(fileResponse !== undefined){
+                if(!sent){
+                    sent = true;
+                    this.fileRepo.resetOBS();
+                    return res.status(fileResponse.httpStatus).send(fileResponse);
+                }
+            }
+        });
     }
+
+
     delete(req: any, res: any, connection: Connection): void {
         let fileResponse: FileResponse;
         let sent = false;
@@ -44,20 +62,10 @@ export class FileCtrl implements ICtrl {
             }
         });
     }
+
+    
     getAll(req: any, res: any, connection: Connection): void {
-        let fileResponse: FileResponse;
-        let sent = false;
-        this.fileRepo.getAll(req,connection);
-        this.fileRepo.getOBS().subscribe(next => {
-            fileResponse = next;
-            if(fileResponse !== undefined){
-                if(!sent){
-                    sent = true;
-                    this.fileRepo.resetOBS();
-                    return res.status(fileResponse.httpStatus).send(fileResponse);
-                }
-            }
-        });
+        throw new Error("Method not implemented.");
     }
 
 }

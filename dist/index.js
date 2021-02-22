@@ -15,9 +15,7 @@ let corsoCtrl = new CorsoCtrl_1.CorsoCtrl();
 let fileCtrl = new FileCtrl_1.FileCtrl();
 app.use(express_1.default.json({ limit: '150mb' }));
 app.use(express_1.default.urlencoded({ limit: '150mb', extended: true }));
-app.use(cors_1.default({
-    origin: '*'
-}));
+app.use(cors_1.default({ origin: '*' }));
 const connection = mysql_1.default.createConnection({
     host: 'shopux.coouthbw1pyt.eu-central-1.rds.amazonaws.com',
     user: 'admin',
@@ -30,9 +28,7 @@ connection.connect((err) => {
     }
     console.log("Mysql Connected ...");
 });
-const server = app.listen(process.env.PORT || 8000, function () {
-    console.log("Listening on port http://localhost:8000");
-});
+const server = app.listen(process.env.PORT || 8000, function () { });
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
@@ -44,5 +40,11 @@ app.post('/corso/updateVisibilityCorso', (req, res) => {
 });
 app.post('/file/save', (req, res) => {
     fileCtrl.save(req, res, connection);
+});
+app.post('/file/get', (req, res) => {
+    fileCtrl.get(req, res, connection);
+});
+app.post('/file/delete', (req, res) => {
+    fileCtrl.delete(req, res, connection);
 });
 //# sourceMappingURL=index.js.map
