@@ -31,6 +31,7 @@ export class FileRepo implements IRepo<FileResponse>{
         this.iSubject = new Subject();
     }
     save(req: any, connection: Connection): void {
+        this.fileResponse = new FileResponse();
         let file : FileLearnIt;
         let sql = "INSERT INTO file (idpadre,type_padre,bytes,base_64,type_file,format,titolo,index_file) VALUES (?,?,?,?,?,?,?,?);";
         file = req.body;
@@ -69,6 +70,7 @@ export class FileRepo implements IRepo<FileResponse>{
         throw new Error("Method not implemented.");
     }
     get(req: any, connection: Connection): void {
+        this.fileResponse = new FileResponse();
         let fileInput : FileLearnIt;
         let fileOut = new FileLearnIt();
         fileInput = req.body;
@@ -103,16 +105,17 @@ export class FileRepo implements IRepo<FileResponse>{
                 });
                 fileOut.base64 = base64;
                 this.fileResponse.obj = fileOut;
-                this.fileResponse.httpStatus = 200;
-                this.iSubject.next(this.fileResponse);
-            }
-
+            } 
+            
+            this.fileResponse.httpStatus = 200;
+            this.iSubject.next(this.fileResponse);
             
         })
     }
 
 
     delete(req: any, connection: Connection): void {
+        this.fileResponse = new FileResponse();
         let file : FileLearnIt;
         file = req.body;
         let sql ="DELETE FROM file WHERE idpadre = ? AND type_padre = ?";

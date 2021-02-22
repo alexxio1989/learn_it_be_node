@@ -24,6 +24,7 @@ class FileRepo {
         this.iSubject = new rxjs_1.Subject();
     }
     save(req, connection) {
+        this.fileResponse = new FileResponse_1.FileResponse();
         let file;
         let sql = "INSERT INTO file (idpadre,type_padre,bytes,base_64,type_file,format,titolo,index_file) VALUES (?,?,?,?,?,?,?,?);";
         file = req.body;
@@ -58,6 +59,7 @@ class FileRepo {
         throw new Error("Method not implemented.");
     }
     get(req, connection) {
+        this.fileResponse = new FileResponse_1.FileResponse();
         let fileInput;
         let fileOut = new FileLearnIt_1.FileLearnIt();
         fileInput = req.body;
@@ -86,12 +88,13 @@ class FileRepo {
                 });
                 fileOut.base64 = base64;
                 this.fileResponse.obj = fileOut;
-                this.fileResponse.httpStatus = 200;
-                this.iSubject.next(this.fileResponse);
             }
+            this.fileResponse.httpStatus = 200;
+            this.iSubject.next(this.fileResponse);
         });
     }
     delete(req, connection) {
+        this.fileResponse = new FileResponse_1.FileResponse();
         let file;
         file = req.body;
         let sql = "DELETE FROM file WHERE idpadre = ? AND type_padre = ?";

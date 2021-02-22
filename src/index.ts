@@ -44,14 +44,14 @@ app.post('/corso/updateVisibilityCorso' , (req,res) => {
     corsoCtrl.updateVisibilityCorso(req,res,connection);
 });
 
-app.post('/file/save' , (req,res) => {
+app.post('/file/saveFile' , (req,res) => {
     fileCtrl.save(req,res,connection);
 });
 
-app.post('/file/get' , (req,res) => {
+app.post('/file/getFile' , (req,res) => {
     fileCtrl.get(req,res,connection);
 });
 
-app.post('/file/delete' , (req,res) => {
+app.post('/file/deleteFile' , (req,res) => {
     fileCtrl.delete(req,res,connection);
 });
