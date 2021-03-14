@@ -26,7 +26,7 @@ class FileRepo {
     save(req, connection) {
         this.fileResponse = new FileResponse_1.FileResponse();
         let file;
-        let sql = "INSERT INTO file (idpadre,type_padre,bytes,base_64,type_file,format,titolo,index_file) VALUES (?,?,?,?,?,?,?,?);";
+        let sql = "INSERT INTO video (bytes,base_64,type_file,format,titolo,index_file,lezione_idlezione) VALUES (?,?,?,?,?,?,?);";
         file = req.body;
         const lenghtbase64 = file.base64.length;
         const subBase64 = FileUtils_1.chunkString(file.base64, lenghtbase64 / 10);
@@ -43,7 +43,7 @@ class FileRepo {
         });
         subBase64.forEach(element => {
             const index = subBase64.indexOf(element);
-            const params = [file.idPadre, file.typePadre, null, element, file.typeFile, file.formato, file.titolo, index];
+            const params = [null, element, file.typeFile, file.formato, file.titolo, index, file.idLezione];
             const result = connection.query(sql, params, (err, result) => {
                 count = count + 1;
                 if (err) {
@@ -63,8 +63,8 @@ class FileRepo {
         let fileInput;
         let fileOut = new FileLearnIt_1.FileLearnIt();
         fileInput = req.body;
-        let sql = "SELECT * from file WHERE idpadre = ? AND type_padre = ?";
-        const params = [fileInput.idPadre, fileInput.typePadre];
+        let sql = "SELECT * from video WHERE lezione_idlezione = ?";
+        const params = [fileInput.idLezione];
         const result = connection.query(sql, params, (err, result) => {
             if (err) {
                 this.fileResponse.httpStatus = 500;
@@ -76,9 +76,8 @@ class FileRepo {
             let base64 = '';
             if (files !== undefined && files !== null && files.length > 0) {
                 const fileFromDB = files[0];
+                fileOut.idLezione = fileFromDB.lezione_idlezione;
                 fileOut.id = fileFromDB.idtable1;
-                fileOut.idPadre = fileFromDB.idpadre;
-                fileOut.typePadre = fileFromDB.type_padre;
                 fileOut.typeFile = fileFromDB.type_file;
                 fileOut.formato = fileFromDB.format;
                 fileOut.titolo = fileFromDB.titolo;
@@ -97,8 +96,8 @@ class FileRepo {
         this.fileResponse = new FileResponse_1.FileResponse();
         let file;
         file = req.body;
-        let sql = "DELETE FROM file WHERE idpadre = ? AND type_padre = ?";
-        const params = [file.idPadre, file.typePadre];
+        let sql = "DELETE FROM video WHERE lezione_idlezione = ?";
+        const params = [file.idLezione];
         const result = connection.query(sql, params, (err, result) => {
             if (err) {
                 this.fileResponse.httpStatus = 500;
