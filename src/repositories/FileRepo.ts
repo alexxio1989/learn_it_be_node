@@ -1,9 +1,10 @@
 import { Connection } from "mysql";
 import { Subject, Observable } from "rxjs";
-import { base64ToByteArray, chunkString } from "../utils/FileUtils";
+import { arrayToBase64, base64ToByteArray, chunkArray, chunkString } from "../utils/FileUtils";
 import { FileLearnIt } from "../models/FileLearnIt";
 import { FileResponse } from "../response/FileResponse";
 import { IRepo } from "./core/IRepo";
+import { isArrayValid, isStringValid } from "../utils/Utils";
 
 
 export class FileRepo implements IRepo<FileResponse>{
@@ -35,10 +36,7 @@ export class FileRepo implements IRepo<FileResponse>{
         let file : FileLearnIt;
         let sql = "INSERT INTO video (bytes,base_64,type_file,format,titolo,index_file,lezione_idlezione) VALUES (?,?,?,?,?,?,?);";
         file = req.body;
-        const lenghtbase64 = file.base64.length
-        const subBase64 = chunkString(file.base64,lenghtbase64 / 10);
         let count = 0;
-        console.log(subBase64.length)
         this.getOBSOnComplete().subscribe(next => {
             this.fileResponse.httpStatus = 200;
             this.fileResponse.status = "Insert avvenuto con successo";
@@ -49,22 +47,51 @@ export class FileRepo implements IRepo<FileResponse>{
             throw error;
         })
 
-        subBase64.forEach(element => {
-            const index = subBase64.indexOf(element)
-            const params = [null,element,file.typeFile,file.formato,file.titolo,index,file.idLezione];
-            
-            const result = connection.query(sql, params, (err: any, result: any) => {
-                count = count + 1;
-                if (err) {
-                    this.iSubjectOnComplete.error;
-                }
-                if(count === subBase64.length){
-                    this.iSubjectOnComplete.next(true);
-                }
+        if(isStringValid(file.base64)){
+            const lenghtbase64 = file.base64.length
+            const subBase64 = chunkString(file.base64,lenghtbase64 / 10);
+    
+            subBase64.forEach(element => {
+                const index = subBase64.indexOf(element)
+                const params = [null,element,file.typeFile,file.formato,file.titolo,index,file.idLezione];
                 
-            })
-            
-        });
+                const result = connection.query(sql, params, (err: any, result: any) => {
+                    count = count + 1;
+                    if (err) {
+                        this.iSubjectOnComplete.error;
+                    }
+                    if(count === subBase64.length){
+                        this.iSubjectOnComplete.next(true);
+                    }
+                    
+                })
+                
+            });
+        }
+
+        if(isArrayValid(file.bytes)){
+            const base64 = arrayToBase64(file.bytes);
+            const subBytes = chunkArray(file.bytes , file.bytes.length / 10);
+            subBytes.forEach(element => {
+                
+                const format  = 'data:' + file.typeFile + ';base64,';
+                const buffer = Buffer.from(element);
+                const params = [ buffer , '' , file.typeFile , format , file.titolo , 0 , file.idLezione ];
+                
+                const result = connection.query(sql, params, (err: any, result: any) => {
+                    count = count + 1;
+                    if (err) {
+                        this.iSubjectOnComplete.error;
+                    }
+                    if(count === subBytes.length){
+                        this.iSubjectOnComplete.next(true);
+                    }
+                    
+                })
+                
+            });
+        }
+
     }
     update(req: any, connection: Connection): void {
         throw new Error("Method not implemented.");
@@ -96,13 +123,40 @@ export class FileRepo implements IRepo<FileResponse>{
                 fileOut.idLezione = fileFromDB.lezione_idlezione;
                 fileOut.id = fileFromDB.idtable1;
                 fileOut.typeFile = fileFromDB.type_file;
-                fileOut.formato = fileFromDB.format;
+               
                 fileOut.titolo = fileFromDB.titolo;
-                let base64 = fileFromDB.format;
-                files.forEach((element: any) => {
-                    base64 = base64 + element.base_64;
-                });
-                fileOut.base64 = base64;
+               
+                if(isArrayValid(fileFromDB.bytes)){
+                    let bytesTot:any[] = [];
+                    let bytesBase:any[] = [];
+                    files.forEach((element: any) => {
+                        let arr = Array.prototype.slice.call(element.bytes);
+                       
+                        if(isArrayValid(bytesTot)){
+                            bytesTot = [...bytesTot, ...arr];
+                        } else {
+                            bytesTot = arr
+                        }
+                      
+                    });
+
+                    let format  = 'data:' + fileFromDB.type_file + ';base64,';
+                    const base64 = arrayToBase64(bytesTot);
+
+                    fileOut.formato = format;
+                    fileOut.base64 =format+base64
+                }
+
+                if(isStringValid(fileFromDB.base_64)){
+                    fileOut.formato = fileFromDB.format;
+                    let base64 = fileFromDB.format;
+                    files.forEach((element: any) => {
+                        base64 = base64 + element.base_64;
+                    });
+                    fileOut.base64 = base64;
+
+                }
+
                 this.fileResponse.obj = fileOut;
             } 
             
