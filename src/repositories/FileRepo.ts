@@ -145,7 +145,7 @@ export class FileRepo implements IRepo<FileResponse>{
 
                     fileOut.formato = format;
                     fileOut.base64 =format+base64
-                }
+                } 
 
                 if(isStringValid(fileFromDB.base_64)){
                     fileOut.formato = fileFromDB.format;
