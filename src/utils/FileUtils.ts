@@ -5,11 +5,6 @@ export function base64ToByteArray(base64String: string) {
 
 export function arrayToBase64(bytes: any[]) : string {
  
-    let binary = '';
-    let len = bytes.length;
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
     return Buffer.from(bytes).toString('base64')
 }
 

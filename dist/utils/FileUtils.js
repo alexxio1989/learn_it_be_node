@@ -6,11 +6,6 @@ function base64ToByteArray(base64String) {
 }
 exports.base64ToByteArray = base64ToByteArray;
 function arrayToBase64(bytes) {
-    let binary = '';
-    let len = bytes.length;
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
     return Buffer.from(bytes).toString('base64');
 }
 exports.arrayToBase64 = arrayToBase64;
