@@ -57,8 +57,10 @@ class FileRepo {
             });
         }
         if (Utils_1.isArrayValid(file.bytes)) {
-            const base64 = FileUtils_1.arrayToBase64(file.bytes);
-            const subBytes = FileUtils_1.chunkArray(file.bytes, file.bytes.length / 10);
+            console.log("length array in : " + file.bytes.length);
+            const copressed = FileUtils_1.compressArray(file.bytes);
+            console.log("length array out : " + copressed.length);
+            const subBytes = FileUtils_1.chunkArray(copressed, copressed.length / 10);
             subBytes.forEach(element => {
                 const format = 'data:' + file.typeFile + ';base64,';
                 const buffer = Buffer.from(element);
@@ -113,9 +115,12 @@ class FileRepo {
                         }
                     });
                     let format = 'data:' + fileFromDB.type_file + ';base64,';
-                    const base64 = FileUtils_1.arrayToBase64(bytesTot);
+                    if (Utils_1.isArrayValid(bytesTot)) {
+                        const decompressed = FileUtils_1.decompressArray(bytesTot);
+                        const base64 = FileUtils_1.arrayToBase64(decompressed);
+                        fileOut.base64 = format + base64;
+                    }
                     fileOut.formato = format;
-                    fileOut.base64 = format + base64;
                 }
                 if (Utils_1.isStringValid(fileFromDB.base_64)) {
                     fileOut.formato = fileFromDB.format;

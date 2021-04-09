@@ -1,6 +1,6 @@
 import { Connection } from "mysql";
 import { Subject, Observable } from "rxjs";
-import { arrayToBase64, base64ToByteArray, chunkArray, chunkString } from "../utils/FileUtils";
+import { arrayToBase64, decompressArray, chunkArray, chunkString, compressArray } from "../utils/FileUtils";
 import { FileLearnIt } from "../models/FileLearnIt";
 import { FileResponse } from "../response/FileResponse";
 import { IRepo } from "./core/IRepo";
@@ -70,8 +70,10 @@ export class FileRepo implements IRepo<FileResponse>{
         }
 
         if(isArrayValid(file.bytes)){
-            const base64 = arrayToBase64(file.bytes);
-            const subBytes = chunkArray(file.bytes , file.bytes.length / 10);
+            console.log("length array in : " + file.bytes.length);
+            const copressed = compressArray(file.bytes );
+            console.log("length array out : " + copressed.length);
+            const subBytes = chunkArray(copressed , copressed.length / 10);
             subBytes.forEach(element => {
                 
                 const format  = 'data:' + file.typeFile + ';base64,';
@@ -141,10 +143,15 @@ export class FileRepo implements IRepo<FileResponse>{
                     });
 
                     let format  = 'data:' + fileFromDB.type_file + ';base64,';
-                    const base64 = arrayToBase64(bytesTot);
+
+                    if(isArrayValid(bytesTot)){
+                        const decompressed = decompressArray(bytesTot);
+                        const base64 = arrayToBase64(decompressed);
+                        fileOut.base64 =format+base64
+
+                    }
 
                     fileOut.formato = format;
-                    fileOut.base64 =format+base64
                 } 
 
                 if(isStringValid(fileFromDB.base_64)){

@@ -16,10 +16,10 @@ app.use(Express.urlencoded( {limit: '150mb',extended : true} ))
 app.use(cors({origin: '*'}));
 
 const connection = mysql.createConnection({
-    host     : 'shopux.coouthbw1pyt.eu-central-1.rds.amazonaws.com',
+    host     : 'ilmiocodice.cxdoth42v0ux.us-east-2.rds.amazonaws.com',
     user     : 'admin',
     password : 'Alessio07081989',
-    database : 'learnit'
+    database : 'ilmiocodice'
 });
 
 connection.connect((err: any) =>{

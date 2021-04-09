@@ -17,10 +17,10 @@ app.use(express_1.default.json({ limit: '150mb' }));
 app.use(express_1.default.urlencoded({ limit: '150mb', extended: true }));
 app.use(cors_1.default({ origin: '*' }));
 const connection = mysql_1.default.createConnection({
-    host: 'shopux.coouthbw1pyt.eu-central-1.rds.amazonaws.com',
+    host: 'ilmiocodice.cxdoth42v0ux.us-east-2.rds.amazonaws.com',
     user: 'admin',
     password: 'Alessio07081989',
-    database: 'learnit'
+    database: 'ilmiocodice'
 });
 connection.connect((err) => {
     if (err) {
